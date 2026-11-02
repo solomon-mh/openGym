@@ -77,7 +77,9 @@ gate_site() {
 	basic_auth {
 		setup $hash
 	}
-	reverse_proxy web:80
+	reverse_proxy web:80 {
+		header_up CF-Connecting-IP {remote_host}
+	}
 }
 EOF
   )
