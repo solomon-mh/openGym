@@ -1,0 +1,5 @@
+# openGym answers its own CORS preflight and does its own sign-in, so Caddy only terminates TLS
+# and passes everything through unchanged (docs/SELF_HOSTING.md, "Phone app and CORS").
+{$OPENGYM_HOST} {
+	reverse_proxy web:80
+}

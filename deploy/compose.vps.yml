@@ -1,0 +1,23 @@
+# VPS overlay: Caddy in front of openGym with automatic HTTPS (Let's Encrypt).
+# Used by deploy/setup-vps.sh as:
+#     docker compose -f docker-compose.yml -f deploy/compose.vps.yml up -d
+# Relative paths resolve against the project root (the first compose file's folder).
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      # The public hostname; the same value as RP_ID in .env.
+      - OPENGYM_HOST=${RP_ID}
+    volumes:
+      # Caddyfile.setup (basic auth on the whole site) until `setup-vps.sh lock`, then Caddyfile.
+      - ./deploy/${CADDYFILE:-Caddyfile}:/etc/caddy/Caddyfile:ro
+      # Certificates. Not secret enough to matter in a backup, but not needed in one either.
+      - ./caddy-data:/data
+      - ./caddy-config:/config

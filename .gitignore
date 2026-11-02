@@ -30,3 +30,9 @@ frontend/bundle-size.json
 
 # Local planning notes
 docs/superpowers/plans/
+
+# deploy/setup-vps.sh: Caddy certificates and the Codex credential cache
+caddy-data/
+caddy-config/
+coach-auth/
+deploy/Caddyfile.setup
