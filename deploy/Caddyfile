@@ -1,5 +1,9 @@
 # openGym answers its own CORS preflight and does its own sign-in, so Caddy only terminates TLS
 # and passes everything through unchanged (docs/SELF_HOSTING.md, "Phone app and CORS").
 {$OPENGYM_HOST} {
-	reverse_proxy web:80
+	reverse_proxy web:80 {
+		# The visitor's address for the sign-in throttle and activity log. Replaces whatever the
+		# client sent; the web container passes it on (CF_CONNECTING_IP in compose.vps.yml).
+		header_up CF-Connecting-IP {remote_host}
+	}
 }

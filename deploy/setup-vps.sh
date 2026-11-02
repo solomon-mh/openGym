@@ -77,7 +77,9 @@ gate_site() {
 	basic_auth {
 		setup $hash
 	}
-	reverse_proxy web:80
+	reverse_proxy web:80 {
+		header_up CF-Connecting-IP {remote_host}
+	}
 }
 EOF
   )
@@ -104,8 +106,6 @@ cmd_install() {
   echo "==> Hostname: $host"
   set_env RP_ID "$host"
   set_env ORIGIN "https://$host"
-  # Only Caddy is public; the web container listens on the loopback for it.
-  set_env WEB_PORT "127.0.0.1:8080"
   set_env FIRST_USER_ADMIN 1
   set_env ALLOW_GUEST 0
   # Lets you sign in where passkeys don't work (some Linux browsers) and recover a lost one.

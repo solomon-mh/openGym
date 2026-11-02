@@ -3,6 +3,15 @@
 #     docker compose -f docker-compose.yml -f deploy/compose.vps.yml up -d
 # Relative paths resolve against the project root (the first compose file's folder).
 services:
+  web:
+    # No published port: only Caddy reaches web, over the compose network. That is what makes
+    # trusting CF-Connecting-IP below safe, so it must not depend on WEB_PORT in .env.
+    ports: !reset []
+    environment:
+      # Pass on the CF-Connecting-IP header Caddy sets to the real visitor, so the sign-in
+      # throttle doesn't count everyone as Caddy.
+      - CF_CONNECTING_IP=$$http_cf_connecting_ip
+
   caddy:
     image: caddy:2
     restart: unless-stopped
